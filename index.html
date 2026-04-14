@@ -1141,12 +1141,18 @@
             const audio = document.getElementById('weddingMusic');
             audio.volume = 0.3;
             
-            audio.play().then(() => {
-                musicStarted = true;
-                console.log('Music started');
-            }).catch(e => {
-                console.log('Play failed:', e);
-            });
+            const playPromise = audio.play();
+            
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    musicStarted = true;
+                    console.log('Music started successfully');
+                }).catch(error => {
+                    console.log('Music play error:', error.message);
+                    // Попробуем снова для некоторых браузеров
+                    audio.play().catch(err => console.log('Retry failed:', err));
+                });
+            }
         }
     }
 
